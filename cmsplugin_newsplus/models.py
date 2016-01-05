@@ -67,10 +67,18 @@ class News(models.Model):
                                'day': self.pub_date.strftime("%d"),
                                'slug': self.slug})
 
+    def sorted_images_width(self):
+        return self.images.all().order_by('size_w')
+
 
 class NewsImage(models.Model):
     news = models.ForeignKey(News, related_name='images')
-    image = models.ImageField(upload_to="news_images")
+    image = models.ImageField(upload_to='news_images', height_field='size_h',
+                              width_field='size_w')
+    size_w = models.PositiveIntegerField(_('Image width auto field'),
+                                         default=0, editable=False)
+    size_h = models.PositiveIntegerField(_('Image height auto field'),
+                                         default=0, editable=False)
 
 
 class LatestNewsPlugin(CMSPlugin):
